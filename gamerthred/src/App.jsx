@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
@@ -14,7 +14,23 @@ import Profile from "./pages/Profile/Profile";
 import Games from "./pages/Games/Games";
 import GameDetail from "./pages/GameDetail/GameDetail";
 
+import Loading from "./components/Loading";
+
 const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
     <Router>
       <Navbar />
