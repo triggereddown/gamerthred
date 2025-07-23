@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Login = ({ setShowLogin }) => {
+  const navigate = useNavigate();
+  // In future: Fetch username and image from backend here
+  let tokenFromLocalStorage = localStorage.getItem("token");
+  if (tokenFromLocalStorage) {
+    const decodedToken = jwtDecode(tokenFromLocalStorage);
+    const currentTime = Date.now() / 1000; // Convert to seconds
+    if (decodedToken.exp && decodedToken.exp < currentTime) {
+      localStorage.clear(); // Token has expired
+    } else {
+      navigate("/profile");
+    }
+  }
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -14,6 +27,24 @@ const Login = ({ setShowLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    fetch("https://gamerthred.com/api/login.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData), // send email & password
+    })
+      .then((response) => response.json()) // assuming PHP returns JSON
+      .then((data) => {
+        console.log("Success:", data);
+        const token = data.data.jwt;
+        localStorage.setItem("token", token);
+        console.log(token);
+        navigate("/profile");
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     console.log("Login submitted", formData);
   };
 

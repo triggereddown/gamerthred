@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { Mail, Lock, UserPlus } from "lucide-react";
 import { assets } from "../../assets/assets"; // adjust if path differs
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Signup = () => {
+  let tokenFromLocalStorage = localStorage.getItem("token");
+  const navigate = useNavigate();
+    if (tokenFromLocalStorage) {
+      const decodedToken = jwtDecode(tokenFromLocalStorage);
+      const currentTime = Date.now() / 1000; // Convert to seconds
+      if (decodedToken.exp && decodedToken.exp < currentTime) {
+        localStorage.clear(); // Token has expired
+      } else {
+        navigate("/profile");
+      }
+    }
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -28,7 +40,28 @@ const Signup = () => {
       alert("Please agree to both Terms & Conditions and Privacy Policy.");
       return;
     }
-
+    fetch("https://gamerthred.com/api/register.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          alert("✅ Registration successful!");
+          const token = dataReceived.data.jwt;
+          localStorage.setItem("token", token);
+          navigate("/profile");
+        } else {
+          alert("❌ " + data.msg);
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        alert("Something went wrong. Please try again.");
+      });
     console.log("Form submitted", formData);
   };
 
