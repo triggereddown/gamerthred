@@ -36,6 +36,9 @@ const Login = ({ setShowLogin }) => {
     })
       .then((response) => response.json()) // assuming PHP returns JSON
       .then((data) => {
+        if (data.status == 205) {
+          navigate(`/verify-otp/${formData.email}`);
+        }
         console.log("Success:", data);
         const token = data.data.jwt;
         localStorage.setItem("token", token);

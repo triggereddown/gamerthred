@@ -7,15 +7,15 @@ import { jwtDecode } from "jwt-decode";
 const Signup = () => {
   let tokenFromLocalStorage = localStorage.getItem("token");
   const navigate = useNavigate();
-    if (tokenFromLocalStorage) {
-      const decodedToken = jwtDecode(tokenFromLocalStorage);
-      const currentTime = Date.now() / 1000; // Convert to seconds
-      if (decodedToken.exp && decodedToken.exp < currentTime) {
-        localStorage.clear(); // Token has expired
-      } else {
-        navigate("/profile");
-      }
+  if (tokenFromLocalStorage) {
+    const decodedToken = jwtDecode(tokenFromLocalStorage);
+    const currentTime = Date.now() / 1000; // Convert to seconds
+    if (decodedToken.exp && decodedToken.exp < currentTime) {
+      localStorage.clear(); // Token has expired
+    } else {
+      navigate("/profile");
     }
+  }
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -51,9 +51,7 @@ const Signup = () => {
       .then((data) => {
         if (data.status === 200) {
           alert("✅ Registration successful!");
-          const token = dataReceived.data.jwt;
-          localStorage.setItem("token", token);
-          navigate("/profile");
+          navigate(`/verify-otp/${formData.email}`);
         } else {
           alert("❌ " + data.msg);
         }

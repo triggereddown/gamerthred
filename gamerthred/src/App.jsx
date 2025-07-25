@@ -13,6 +13,7 @@ import Disclaimer from "./pages/Disclaimer/Disclaimer";
 import Profile from "./pages/Profile/Profile";
 import Games from "./pages/Games/Games";
 import GameDetail from "./pages/GameDetail/GameDetail";
+import OtpVerification from "./pages/Otp/Otp";
 
 import Loading from "./components/Loading";
 
@@ -42,8 +43,9 @@ const App = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/games" element={<Games />} />
+        {/* <Route path="/games" element={<Games />} /> */}
         <Route path="/games/:gameId" element={<GameDetail />} />
+        <Route path="/verify-otp/:email" element={<OtpVerification />} />
       </Routes>
       <About />
       <Footer />
