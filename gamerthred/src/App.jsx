@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Header from "./components/Header";
@@ -14,8 +19,35 @@ import Profile from "./pages/Profile/Profile";
 import Games from "./pages/Games/Games";
 import GameDetail from "./pages/GameDetail/GameDetail";
 import OtpVerification from "./pages/Otp/Otp";
-
 import Loading from "./components/Loading";
+import Forgot from "./pages/Forgot/Forgot";
+
+const AppWrapper = () => {
+  const location = useLocation();
+
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Header />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/tos" element={<Tos />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/forgot" element={<Forgot />} />
+        <Route path="/games" element={<Games />} />
+        <Route path="/games/:gameId" element={<GameDetail />} />
+        <Route path="/verify-otp/:email" element={<OtpVerification />} />
+      </Routes>
+
+      {location.pathname === "/" && <About />}
+
+      <Footer />
+    </>
+  );
+};
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,21 +66,7 @@ const App = () => {
 
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Header />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/tos" element={<Tos />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/disclaimer" element={<Disclaimer />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/games" element={<Games />} />
-        <Route path="/games/:gameId" element={<GameDetail />} />
-        <Route path="/verify-otp/:email" element={<OtpVerification />} />
-      </Routes>
-      <About />
-      <Footer />
+      <AppWrapper />
     </Router>
   );
 };

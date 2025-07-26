@@ -49,7 +49,7 @@ const Games = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white px-4 py-10 md:px-20 font-sans">
       <h1 className="text-3xl font-bold mb-10 text-center text-white drop-shadow-xl">
-        🚀 Select Your Game Mission
+        🚀 Select Your Game
       </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">

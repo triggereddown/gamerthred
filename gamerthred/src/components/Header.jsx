@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Mail } from "lucide-react";
 
@@ -9,6 +10,31 @@ const Header = () => {
     minutes: "00",
     seconds: "00",
   });
+
+  const navigate = useNavigate();
+
+  const gamePreviewData = [
+    {
+      task_id: "t001",
+      task_name: "Build a Mini JCB",
+      task_description:
+        "Assemble a virtual JCB model using the provided parts and instructions.",
+      image_url: "https://via.placeholder.com/300x200?text=JCB+Game",
+      total_users: 100,
+      joined_users: 76,
+      time: "2h",
+    },
+    {
+      task_id: "t002",
+      task_name: "Plant a Tree in Simulation",
+      task_description:
+        "Use the farming sim to plant and grow a tree to maturity.",
+      image_url: "https://via.placeholder.com/300x200?text=Plant+Tree",
+      total_users: 50,
+      joined_users: 32,
+      time: "1h 30m",
+    },
+  ];
 
   useEffect(() => {
     const targetDate = new Date("2025-07-28T12:00:00+05:30");
@@ -49,16 +75,14 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex flex-col md:flex-row items-center justify-between px-4 sm:px-6 md:px-20 lg:px-32 xl:px-40 py-12 md:py-20 font-sans relative overflow-hidden">
-
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex flex-col items-center justify-start px-4 sm:px-6 md:px-20 lg:px-32 xl:px-40 py-12 md:py-20 font-sans relative overflow-hidden">
       {/* Background Glow */}
       <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-purple-700 opacity-30 blur-3xl rounded-full z-0"></div>
 
-      {/* Main Content: Shared Layout */}
+      {/* Main Section */}
       <div className="flex flex-col-reverse md:flex-row justify-between items-center w-full gap-12 z-10">
-        {/* Left Content Block */}
+        {/* Left Content */}
         <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-8 flex-1">
-          {/* 1. Gamer Thred */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">
             Gamer
             <span className="text-black bg-white py-1 px-2 rounded shadow ml-2">
@@ -66,7 +90,6 @@ const Header = () => {
             </span>
           </h1>
 
-          {/* 2. Launch Text */}
           <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight">
             We're <br />
             <span className="text-purple-500 animate-pulse">
@@ -74,7 +97,7 @@ const Header = () => {
             </span>
           </h2>
 
-          {/* 3. Image (Mobile First) */}
+          {/* Mobile Image */}
           <div className="block md:hidden">
             <img
               src={assets.consolee}
@@ -83,7 +106,7 @@ const Header = () => {
             />
           </div>
 
-          {/* 4. Timer */}
+          {/* Countdown Timer */}
           <div className="flex flex-row gap-x-4 justify-center md:justify-start text-white font-semibold text-lg sm:text-xl">
             {[
               { label: "Days", value: timeLeft.days },
@@ -103,13 +126,11 @@ const Header = () => {
             ))}
           </div>
 
-          {/* 5. Description Text */}
           <p className="text-white font-bold px-4 sm:px-0">
             We’re building something for the everyday gamers — fair, rewarding,
             and real.
           </p>
 
-          {/* 6. Join Waitlist Button */}
           <a
             href="https://forms.gle/Vvx7RgXswjjiWvcZ9"
             target="_blank"
@@ -119,7 +140,6 @@ const Header = () => {
             🚀 Join the Waitlist
           </a>
 
-          {/* 7. Contact Us Button */}
           <a
             href="mailto:gamerthred1@gmail.com"
             className="mt-3 bg-purple-600 hover:bg-fuchsia-600 transition-all px-6 py-3 rounded-full text-white text-md font-semibold shadow-lg flex items-center justify-center space-x-2"
@@ -129,7 +149,7 @@ const Header = () => {
           </a>
         </div>
 
-        {/* Desktop Image (hidden on mobile) */}
+        {/* Desktop Console Image */}
         <div className="hidden md:flex flex-1 justify-center">
           <img
             src={assets.consolee}
@@ -139,7 +159,37 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Floating Animation */}
+      {/* Featured Game Cards Section */}
+      <div className="w-full mt-20 z-10">
+        <h3 className="text-2xl sm:text-3xl font-bold text-center text-white mb-8">
+          Featured Missions 🎮
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+          {gamePreviewData.map((game) => (
+            <div
+              key={game.task_id}
+              onClick={() => navigate(`/games/${game.task_id}`)}
+              className="cursor-pointer p-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-purple-700/70 hover:border-purple-400 group"
+            >
+              <img
+                src={game.image_url}
+                alt={game.task_name}
+                className="w-full h-40 object-cover rounded-md mb-4 border border-white/20 group-hover:shadow-md group-hover:shadow-purple-400"
+              />
+              <h2 className="text-xl font-semibold text-center mb-2 group-hover:text-purple-300">
+                {game.task_name}
+              </h2>
+              <p className="text-sm text-gray-300 text-center">
+                {game.task_description}
+              </p>
+              <p className="text-xs text-gray-400 mt-2 text-center">
+                ⏱ {game.time} • 👥 {game.joined_users}/{game.total_users}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <style>{`
         @keyframes float {
           0% { transform: translateY(0px); }

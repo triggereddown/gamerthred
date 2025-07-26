@@ -1,19 +1,27 @@
 import React from "react";
+import { Link } from "react-router-dom"; // Import Link if you'll add a "Back to Home" link as in Privacy
 
 const Tos = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white px-6 sm:px-10 md:px-20 lg:px-32 py-16 relative font-sans">
-      <div className="absolute -top-20 -right-20 w-[400px] h-[400px] bg-purple-700 opacity-30 blur-3xl rounded-full z-0"></div>
+    <div>
+      {/* This entire div sets up the full-screen background and centers the content box */}
+      <div className="min-h-screen w-full bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex items-center justify-center px-6 py-20 font-sans relative overflow-hidden">
+        {/* Background Glows (same as Privacy page) */}
+        <div className="absolute -top-32 -left-20 w-[400px] h-[400px] bg-purple-700 opacity-20 blur-3xl rounded-full z-0"></div>
+        <div className="absolute -bottom-32 -right-20 w-[400px] h-[400px] bg-purple-600 opacity-20 blur-3xl rounded-full z-0"></div>
 
-      <div className="z-10 relative max-w-5xl mx-auto space-y-8">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-purple-400">
-          GamerThred: Terms of Service
-        </h1>
+        {/* The main content box with backdrop blur and scroll */}
+        <div className="bg-gray-900 bg-opacity-90 backdrop-blur-md rounded-xl shadow-2xl p-8 sm:p-12 w-full max-w-4xl z-10 text-white overflow-y-auto max-h-[90vh]">
+          {/* Title Section */}
+          <h1 className="text-3xl font-bold mb-4 text-purple-400 text-center">
+            GamerThred: Terms of Service
+          </h1>
+          <p className="text-sm text-gray-400 text-center mb-8">
+            Last Updated: July 18, 2025
+          </p>
 
-        <p className="text-white/80 text-sm">Last Updated: July 18, 2025</p>
-
-        <div className="space-y-6 text-white/80">
-          <section>
+          {/* Content Body */}
+          <div className="text-sm text-gray-300 space-y-6">
             <p>
               Welcome to GamerThred! These Terms of Service ("Terms") govern
               your access to and use of the GamerThred website, mobile
@@ -22,20 +30,20 @@ const Tos = () => {
               Terms. If you do not agree to these Terms, please do not use the
               Platform.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">1. Acceptance of Terms</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              1. Acceptance of Terms
+            </h2>
             <p>
               By creating an account, accessing, or using the GamerThred
               Platform, you acknowledge that you have read, understood, and
               agree to be bound by these Terms, our Privacy Policy, and all
               applicable laws and regulations in India.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">2. Eligibility</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              2. Eligibility
+            </h2>
             <p>
               2.1. You must be at least 13 years old to use GamerThred. Users
               under 18 require parental or guardian consent. By using the
@@ -47,10 +55,8 @@ const Tos = () => {
               features/rewards in states or regions where online gaming or
               reward programs are prohibited or restricted by law.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               3. Account Registration and Security
             </h2>
             <p>
@@ -66,10 +72,10 @@ const Tos = () => {
               3.3. You must notify GamerThred immediately of any unauthorized
               use of your account or any other breach of security.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">4. GamerThred Services</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              4. GamerThred Services
+            </h2>
             <p>
               4.1. Task Completion: GamerThred provides a platform where users
               can discover and complete specific in-game tasks ("Tasks") in
@@ -97,10 +103,8 @@ const Tos = () => {
               depend solely on user activity, skill, and successful Task
               completion and verification.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               5. User Conduct and Prohibited Activities
             </h2>
             <p>
@@ -143,10 +147,8 @@ const Tos = () => {
               5.3. GamerThred reserves the right to investigate and take action,
               including account termination and reporting to authorities.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               6. User-Generated Content (UGC)
             </h2>
             <p>
@@ -158,10 +160,10 @@ const Tos = () => {
               <br />
               6.3. GamerThred may monitor or remove content at its discretion.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">7. Intellectual Property</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              7. Intellectual Property
+            </h2>
             <p>
               7.1. All content, trademarks, service marks, logos, and other
               intellectual property displayed on the GamerThred Platform
@@ -185,10 +187,8 @@ const Tos = () => {
               logos, or content on our Platform is for descriptive purposes only
               and does not imply endorsement or affiliation.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               8. Disclaimers and Limitation of Liability
             </h2>
             <p>
@@ -212,20 +212,18 @@ const Tos = () => {
               Platform; or (c) unauthorized access, use, or alteration of your
               transmissions or content.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">9. Indemnification</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              9. Indemnification
+            </h2>
             <p>
               You agree to indemnify, defend, and hold harmless GamerThred, its
               affiliates, officers, directors, employees, and agents from and
               against all claims arising from your use of the Platform or
               violation of these Terms.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               10. Modifications to Terms
             </h2>
             <p>
@@ -235,10 +233,8 @@ const Tos = () => {
               means. Your continued use of the Platform after such modifications
               constitutes your acceptance of the revised Terms.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">
+            <h2 className="text-purple-300 font-semibold text-lg">
               11. Governing Law and Dispute Resolution
             </h2>
             <p>
@@ -248,10 +244,10 @@ const Tos = () => {
               or your use of the Platform shall be subject to the exclusive
               jurisdiction of the courts located in India.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">12. Termination</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              12. Termination
+            </h2>
             <p>
               GamerThred may, at its sole discretion, suspend or terminate your
               account and access to the Platform at any time, without prior
@@ -259,24 +255,32 @@ const Tos = () => {
               your breach of these Terms, fraudulent activity, or non-compliance
               with applicable laws.
             </p>
-          </section>
 
-          <section>
-            <h2 className="text-xl font-bold mb-2">13. Contact Us</h2>
+            <h2 className="text-purple-300 font-semibold text-lg">
+              13. Contact Us
+            </h2>
             <p>
               If you have any questions about these Terms, please contact us at{" "}
               <a
-                href="mailto:support@gamerthred.com"
+                href="mailto:gamerthred1@gmail.com"
                 className="text-purple-400 underline"
               >
                 gamerthred1@gmail.com
               </a>
               .
             </p>
-          </section>
-        </div>
 
-        <p className="text-white/50 text-sm">Last updated: July 18, 2025</p>
+            {/* Back to Home Link (Optional, but good for consistency) */}
+            <div className="text-center mt-6">
+              <Link
+                to="/"
+                className="text-purple-400 hover:text-purple-300 hover:underline transition"
+              >
+                ← Back to Home
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
