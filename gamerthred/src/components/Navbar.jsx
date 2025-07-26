@@ -54,21 +54,35 @@ const Navbar = () => {
           >
             Games
           </Link>
-          {isAuthenticated ? (
-            <>
-            <Link
-            to="/profile"
+          <Link
+            to="/leaderboard"
             onClick={scrollToTop}
             className="hover:text-white transition hover:underline"
           >
-            Profile
+            🏆 Leaderboard
           </Link>
-            <button
-              onClick={handleLogout}
-              className="bg-red-500 text-white px-5 py-2 rounded-full hover:bg-red-600 transition"
-            >
-              Logout
-            </button>
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/rewards"
+                onClick={scrollToTop}
+                className="hover:text-white transition hover:underline"
+              >
+                Rewards
+              </Link>
+              <Link
+                to="/profile"
+                onClick={scrollToTop}
+                className="hover:text-white transition hover:underline"
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-5 py-2 rounded-full hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <>
@@ -103,28 +117,39 @@ const Navbar = () => {
             >
               Games
             </Link>
-            
-
+            <Link
+              to="/leaderboard"
+              onClick={scrollToTop}
+              className="hover:text-white transition hover:underline"
+            >
+              🏆 Leaderboard
+            </Link>
             {isAuthenticated ? (
               <>
-              <Link
-              to="/profile"
-              onClick={() => {
-                scrollToTop();
-                setIsMobileMenuOpen(false);
-              }}
-              className="text-white hover:underline"
-            >
-              Profile
-            </Link>
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-1.5 rounded-full text-center"
-              >
-                Logout
-              </button>
+                <Link
+                  to="/rewards"
+                  onClick={scrollToTop}
+                  className="hover:text-white transition hover:underline"
+                >
+                  Rewards
+                </Link>
+                <Link
+                  to="/profile"
+                  onClick={() => {
+                    scrollToTop();
+                    setIsMobileMenuOpen(false);
+                  }}
+                  className="text-white hover:underline"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white px-4 py-1.5 rounded-full text-center"
+                >
+                  Logout
+                </button>
               </>
-              
             ) : (
               <>
                 <Link

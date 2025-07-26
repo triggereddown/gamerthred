@@ -21,6 +21,8 @@ import GameDetail from "./pages/GameDetail/GameDetail";
 import OtpVerification from "./pages/Otp/Otp";
 import Loading from "./components/Loading";
 import Forgot from "./pages/Forgot/Forgot";
+import Leaderboard from "./pages/Leaderboard/Leaderboard";
+import Rewards from "./pages/Rewards/Rewards";
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -40,6 +42,8 @@ const AppWrapper = () => {
         <Route path="/games" element={<Games />} />
         <Route path="/games/:gameId" element={<GameDetail />} />
         <Route path="/verify-otp/:email" element={<OtpVerification />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/rewards" element={<Rewards />} />
       </Routes>
 
       {location.pathname === "/" && <About />}
