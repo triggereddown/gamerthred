@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/profile" element={<Profile />} />
-        {/* <Route path="/games" element={<Games />} /> */}
+        <Route path="/games" element={<Games />} />
         <Route path="/games/:gameId" element={<GameDetail />} />
         <Route path="/verify-otp/:email" element={<OtpVerification />} />
       </Routes>
