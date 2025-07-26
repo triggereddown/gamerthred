@@ -35,6 +35,7 @@ const GameDetail = () => {
           total_users: 50,
           joined_users: 30,
           time: "30m",
+          type: "weekly",
         },
         {
           task_id: "task2",
@@ -48,6 +49,7 @@ const GameDetail = () => {
           total_users: 50,
           joined_users: 25,
           time: "1h",
+          type: "daily",
         },
       ],
       t002: [
@@ -63,6 +65,7 @@ const GameDetail = () => {
           total_users: 30,
           joined_users: 22,
           time: "20m",
+          type: "weekly",
         },
         {
           task_id: "task5",
@@ -76,6 +79,7 @@ const GameDetail = () => {
           total_users: 30,
           joined_users: 25,
           time: "40m",
+          type: "monthly",
         },
       ],
     };
@@ -129,11 +133,22 @@ const GameDetail = () => {
             onSubmit={(e) => handleTaskSubmit(e, task.task_name)}
             className="relative w-full max-w-2xl bg-white bg-opacity-10 p-6 rounded-xl shadow-lg backdrop-blur-md border-2 border-purple-500 hover:border-purple-400 transition group"
           >
+            {/* Points Tag */}
             <div className="absolute top-4 right-4 bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md z-20">
-              +{task.points} pts
+              +{task.points} GTC
             </div>
+
+            {/* Mission Type Glow Tag */}
+            <div className="absolute top-4 left-4 z-20">
+              <span className="px-3 py-1 text-xs font-bold text-yellow-200 bg-yellow-600 bg-opacity-30 border border-yellow-400 rounded-full shadow-md animate-pulse">
+                {task.type?.toUpperCase()} MISSION
+              </span>
+            </div>
+
+            {/* Glowing Border Background */}
             <div className="absolute -inset-0.5 rounded-xl blur-xl bg-purple-700 opacity-30 group-hover:opacity-60 transition-all pointer-events-none z-0" />
 
+            {/* Content */}
             <div className="relative z-10">
               <h2 className="text-xl font-semibold mb-3 text-center">
                 {task.task_name}
@@ -143,6 +158,7 @@ const GameDetail = () => {
                 {task.full_description}
               </p>
 
+              {/* Demo Image */}
               {task.demo_image_url && (
                 <div className="mb-4">
                   <p className="text-xs text-gray-400 mb-1">Demo Screenshot:</p>
@@ -154,25 +170,23 @@ const GameDetail = () => {
                 </div>
               )}
 
+              {/* Screenshot Upload */}
               <input
                 type="file"
                 accept="image/*"
-                className="w-full mb-3 p-2 rounded bg-white text-black"
-                required
-              />
-
-              <p className="text-xs text-gray-400 mb-4">
-                Time: {task.time} | Joined: {task.joined_users}/
-                {task.total_users}
-              </p>
-
-              <input
-                type="number"
-                min="0"
-                placeholder="Time taken (mins)"
                 className="w-full mb-4 p-2 rounded bg-white text-black"
                 required
               />
+
+              {/* Time & Participants */}
+              <div className="flex justify-between items-center text-xs text-gray-400 mb-4">
+                <span className="bg-purple-800 px-2 py-1 rounded-full text-white text-xs font-semibold">
+                  ⏱ Estimated: {task.time}
+                </span>
+                <span>
+                  👥 Joined: {task.joined_users}/{task.total_users}
+                </span>
+              </div>
 
               <button
                 type="submit"
@@ -185,7 +199,7 @@ const GameDetail = () => {
         ))}
       </div>
 
-      {/* Social Media Tasks Section */}
+      {/* Social Media Tasks */}
       <div className="mt-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Social Media Bonus Tasks

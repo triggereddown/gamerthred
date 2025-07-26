@@ -5,66 +5,129 @@ import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
 const Profile = () => {
-  // Mocked initial value; replace with real fetch logic in future
   const navigate = useNavigate();
-  const [username, setUsername] = useState("username");
+  const [username, setUsername] = useState("Rexui");
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(username);
-  
+  const expPercent = 65;
+
   useEffect(() => {
-    // In future: Fetch username and image from backend here
-    let tokenFromLocalStorage = localStorage.getItem("token");
-  if (!tokenFromLocalStorage) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    } else {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp && decoded.exp < currentTime) {
+        localStorage.clear();
         navigate("/login");
       } else {
-        const decodedToken = jwtDecode(tokenFromLocalStorage);
-        const currentTime = Date.now() / 1000; // Convert to seconds
-        if (decodedToken.exp && decodedToken.exp < currentTime) {
-          localStorage.clear(); // Token has expired
-          navigate("/login");
-        }else{
-          console.log(decodedToken.name);
-          setUsername(decodedToken.name);
-        }
+        setUsername(decoded.name || "Rexui");
       }
+    }
   }, []);
 
   const handleEditToggle = () => {
-    if (editing) setUsername(tempName); // Save edited name
+    if (editing) setUsername(tempName);
     setEditing(!editing);
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white p-6 font-sans">
-      <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 shadow-lg w-full max-w-md text-center">
-        <h2 className="text-3xl font-semibold mb-6">Profile</h2>
-
-        {/* User Image */}
-        <div className="flex justify-center mb-4">
-          <img
-            src={assets.logo} // Replace with dynamic URL later
-            alt="User Avatar"
-            className="h-24 w-24 rounded-full border-2 border-white object-cover"
-          />
-        </div>
-
-        {/* Name with Edit Option */}
-        <div className="flex items-center justify-center gap-2 mb-4">
-          {editing ? (
-            <input
-              value={tempName}
-              onChange={(e) => setTempName(e.target.value)}
-              className="bg-transparent border-b border-white text-white text-lg text-center focus:outline-none"
+    <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex items-center justify-center font-sans">
+      <div className="relative backdrop-blur-xl bg-gradient-to-br from-purple-700/20 via-purple-400/10 to-yellow-100/10 border border-purple-300/30 rounded-3xl shadow-[0_0_30px_#FFD70055] p-8 w-[500px] text-white overflow-hidden">
+        {/* Avatar */}
+        <div className="flex justify-center mb-6">
+          <div className="relative h-28 w-28 rounded-full border-4 border-purple-400 shadow-lg overflow-hidden">
+            <img
+              src={assets.logo}
+              alt="User"
+              className="object-cover h-full w-full"
             />
-          ) : (
-            <p className="text-xl">{username}</p>
-          )}
-          <button onClick={handleEditToggle} className="text-white">
-            <Pencil size={20} />
-          </button>
+          </div>
         </div>
 
-        <p className="text-sm opacity-70">Your public profile info.</p>
+        {/* Username + Edit */}
+        <div className="text-center mb-4">
+          <div className="flex items-center justify-center gap-2">
+            {editing ? (
+              <input
+                value={tempName}
+                onChange={(e) => setTempName(e.target.value)}
+                className="bg-transparent border-b border-white text-white text-lg text-center focus:outline-none"
+              />
+            ) : (
+              <h2 className="text-2xl font-bold tracking-wide">{username}</h2>
+            )}
+            <button onClick={handleEditToggle}>
+              <Pencil size={18} />
+            </button>
+          </div>
+        </div>
+
+        <hr className="my-4 border-white/20" />
+
+        {/* Badges */}
+        <div className="mb-6">
+          <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
+            Badges
+          </h3>
+          <div className="flex justify-center gap-4">
+            <img src={assets.fourthblue} alt="badge" className="h-20" />
+            <img src={assets.level2} alt="badge" className="h-20" />
+            <img src={assets.firstgold} alt="badge" className="h-20" />
+          </div>
+        </div>
+
+        {/* Missions */}
+        <div className="mb-6">
+          <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
+            Missions Ongoing
+          </h3>
+          <ul className="space-y-1 text-sm font-medium pl-4 list-disc list-inside">
+            <li>🛠️ Build a JCB</li>
+            <li>🦴 Break a bone</li>
+          </ul>
+        </div>
+
+        {/* EXP Bar */}
+        <div className="mb-6">
+          <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
+            Experience
+          </h3>
+          <div className="w-full h-4 bg-white/10 rounded-full">
+            <div
+              className="h-full bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 rounded-full transition-all duration-500"
+              style={{ width: `${expPercent}%` }}
+            ></div>
+          </div>
+          <p className="text-xs mt-1 text-center text-yellow-300">
+            {expPercent}% to next level
+          </p>
+        </div>
+
+        {/* Playing Games */}
+        <div className="mt-6">
+          <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
+            Now Playing
+          </h3>
+          <div className="flex justify-center gap-4">
+            <img
+              src="/games/valorant.jpg"
+              alt="Valorant"
+              className="h-12 w-12 rounded-lg object-cover"
+            />
+            <img
+              src="/games/minecraft.jpg"
+              alt="Minecraft"
+              className="h-12 w-12 rounded-lg object-cover"
+            />
+            <img
+              src="/games/fifa.jpg"
+              alt="FIFA"
+              className="h-12 w-12 rounded-lg object-cover"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

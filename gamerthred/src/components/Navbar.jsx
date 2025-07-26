@@ -61,6 +61,13 @@ const Navbar = () => {
           >
             🏆 Leaderboard
           </Link>
+          <Link
+            to="/missions"
+            onClick={scrollToTop}
+            className="hover:text-white transition hover:underline"
+          >
+            Missions
+          </Link>
           {isAuthenticated ? (
             <>
               <Link

@@ -83,12 +83,12 @@ const Header = () => {
       <div className="flex flex-col-reverse md:flex-row justify-between items-center w-full gap-12 z-10">
         {/* Left Content */}
         <div className="flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-8 flex-1">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">
+          {/* <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-wide">
             Gamer
             <span className="text-black bg-white py-1 px-2 rounded shadow ml-2">
               Thred
             </span>
-          </h1>
+          </h1> */}
 
           <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight">
             We're <br />
@@ -152,7 +152,7 @@ const Header = () => {
         {/* Desktop Console Image */}
         <div className="hidden md:flex flex-1 justify-center">
           <img
-            src={assets.consolee}
+            src={assets.brand}
             alt="Console"
             className="w-[600px] animate-[float_3s_ease-in-out_infinite]"
           />

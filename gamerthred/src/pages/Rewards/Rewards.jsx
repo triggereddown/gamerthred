@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-// import axios from "axios";
 
 export default function Rewards() {
   const [rewards, setRewards] = useState([]);
   const [userXP, setUserXP] = useState(0);
 
   useEffect(() => {
-    // Mock data for rewards
     const demoRewards = [
       {
         id: 1,
@@ -36,69 +34,54 @@ export default function Rewards() {
 
     const demoUserXP = 350;
 
-    // Simulate API fetching
     setTimeout(() => {
       setRewards(demoRewards);
       setUserXP(demoUserXP);
     }, 300);
-
-    //   const fetchData = async () => {
-    //     try {
-    //       const rewardRes = await axios.get("/api/rewards");
-    //       setRewards(rewardRes.data);
-
-    //       const xpRes = await axios.get("/api/user-xp");
-    //       setUserXP(xpRes.data.xp);
-    //     } catch (err) {
-    //       console.error("Error fetching store data:", err);
-    //     }
-    //   };
-
-    //   fetchData();
   }, []);
 
-  const claimReward = async (rewardId) => {
-    try {
-      alert(`Claimed reward #${rewardId}!`);
-      //     const res = await axios.post("/api/claim-reward", { rewardId });
-      //     alert(res.data.message);
-      //     setUserXP((prevXP) => prevXP - res.data.cost);
-    } catch (err) {
-      //     console.error("Error claiming reward:", err);
-      alert("Failed to claim reward.", err);
-    }
+  const claimReward = (rewardId) => {
+    alert(`Claimed reward #${rewardId}!`);
   };
 
   return (
-    <div className="bg-[#050D2B] min-h-screen p-8 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#0b0120] to-[#160428] p-8 text-white">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-center">Reward Store</h1>
-        <p className="text-center text-lg mb-8">
-          Your XP: <span className="font-semibold">{userXP}</span>
+        <h1 className="text-4xl font-extrabold text-center text-white mb-6 drop-shadow-md">
+          🎁 Reward Store
+        </h1>
+
+        <p className="text-center text-lg mb-10 text-purple-300">
+          Your XP:{" "}
+          <span className="text-yellow-400 font-bold text-xl">{userXP}</span>
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {rewards.map((reward) => (
             <div
               key={reward.id}
-              className="bg-[#9139e0] p-4 rounded-xl shadow-md text-center"
+              className="relative bg-[#1c0b33]/60 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-[0_0_30px_#641bff20] hover:shadow-[0_0_40px_#e0c26833] transition-transform duration-300 hover:scale-[1.03]"
             >
+              {/* Optional glow border */}
+              <div className="absolute inset-0 rounded-2xl pointer-events-none border border-purple-600/20"></div>
+
               <img
                 src={reward.image}
                 alt={reward.name}
-                className="w-full h-32 object-cover rounded-lg mb-3"
+                className="w-full h-32 object-cover rounded-xl mb-4"
               />
-              <h2 className="text-xl font-semibold mb-1">{reward.name}</h2>
-              <p className="text-black mb-3">
+              <h2 className="text-xl font-bold mb-2">{reward.name}</h2>
+              <p className="text-yellow-300 font-medium mb-4">
                 XP Required: {reward.requiredXP}
               </p>
+
               <button
                 onClick={() => claimReward(reward.id)}
                 disabled={userXP < reward.requiredXP}
-                className={`w-full py-2 rounded-lg font-semibold transition-colors ${
+                className={`w-full py-2 rounded-lg font-bold tracking-wide transition-all duration-300 ${
                   userXP >= reward.requiredXP
-                    ? "bg-green-600 text-white hover:bg-green-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    ? "bg-gradient-to-r from-yellow-500 to-yellow-300 text-black shadow-[0_0_10px_#e0c26866] hover:brightness-110"
+                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
                 }`}
               >
                 {userXP >= reward.requiredXP ? "Claim" : "Not Enough XP"}
