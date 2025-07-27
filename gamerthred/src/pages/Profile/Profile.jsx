@@ -9,7 +9,8 @@ const Profile = () => {
   const [username, setUsername] = useState("Rexui");
   const [editing, setEditing] = useState(false);
   const [tempName, setTempName] = useState(username);
-  const expPercent = 65;
+  /*
+  const [xp, setXp] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -23,9 +24,31 @@ const Profile = () => {
         navigate("/login");
       } else {
         setUsername(decoded.name || "Rexui");
+        setXp(decoded.xp || 0);
       }
     }
   }, []);
+  */
+
+  let xp = 650; // remove this when fething xp dynamically
+
+  const getLevelInfo = (xp) => {
+    if (xp >= 1500) return { level: 5, badge: "Clutcher Badge" };
+    if (xp >= 900) return { level: 4, badge: "Synced Badge" };
+    if (xp >= 500) return { level: 3, badge: "Loaded Badge" };
+    if (xp >= 200) return { level: 2, badge: "Grinder Badge" };
+    return { level: 1, badge: "Spawned Badge" };
+  };
+
+  const { level, badge } = getLevelInfo(xp);
+
+  const levelThresholds = [0, 200, 500, 900, 1500];
+  const nextLevelXp = level < 5 ? levelThresholds[level] : 1500;
+  const prevLevelXp = levelThresholds[level - 1];
+  const expPercent =
+    level === 5
+      ? 100
+      : Math.floor(((xp - prevLevelXp) / (nextLevelXp - prevLevelXp)) * 100);
 
   const handleEditToggle = () => {
     if (editing) setUsername(tempName);
@@ -46,7 +69,7 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Username + Edit */}
+        {/* Username */}
         <div className="text-center mb-4">
           <div className="flex items-center justify-center gap-2">
             {editing ? (
@@ -66,33 +89,24 @@ const Profile = () => {
 
         <hr className="my-4 border-white/20" />
 
-        {/* Badges */}
-        <div className="mb-6">
+        {/* Badge Display */}
+        <div className="mb-6 text-center">
           <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
-            Badges
+            Level {level} - {badge}
           </h3>
-          <div className="flex justify-center gap-4">
-            <img src={assets.fourthblue} alt="badge" className="h-20" />
-            <img src={assets.level2} alt="badge" className="h-20" />
-            <img src={assets.firstgold} alt="badge" className="h-20" />
+          <div className="flex justify-center">
+            <img
+              src={assets[`level${level}`]} // Assumes assets.level1 to level5
+              alt={`Level ${level} badge`}
+              className="h-24"
+            />
           </div>
         </div>
 
-        {/* Missions */}
-        {/* <div className="mb-6">
-          <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
-            Missions Ongoing
-          </h3>
-          <ul className="space-y-1 text-sm font-medium pl-4 list-disc list-inside">
-            <li>🛠️ Build a JCB</li>
-            <li>🦴 Break a bone</li>
-          </ul>
-        </div> */}
-
-        {/* EXP Bar */}
+        {/* XP Progress Bar */}
         <div className="mb-6">
           <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
-            Experience
+            Experience ({xp} XP)
           </h3>
           <div className="w-full h-4 bg-white/10 rounded-full">
             <div
@@ -101,11 +115,13 @@ const Profile = () => {
             ></div>
           </div>
           <p className="text-xs mt-1 text-center text-yellow-300">
-            {expPercent}% to next level
+            {level === 5
+              ? "Max Level Achieved"
+              : `${expPercent}% to Level ${level + 1}`}
           </p>
         </div>
 
-        {/* Playing Games */}
+        {/* Games Playing */}
         <div className="mt-6">
           <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
             Now Playing
