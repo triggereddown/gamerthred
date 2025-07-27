@@ -79,7 +79,7 @@ const Profile = () => {
         </div>
 
         {/* Missions */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
             Missions Ongoing
           </h3>
@@ -87,7 +87,7 @@ const Profile = () => {
             <li>🛠️ Build a JCB</li>
             <li>🦴 Break a bone</li>
           </ul>
-        </div>
+        </div> */}
 
         {/* EXP Bar */}
         <div className="mb-6">
