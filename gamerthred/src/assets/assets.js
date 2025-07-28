@@ -19,6 +19,7 @@ import secondgold from "./second gold.png";
 import thirdgold from "./third gold.png";
 import fourthgold from "./fourth gold.png";
 import lowestgold from "./lowest gold.png";
+import zebion from "./zebion.jpg";
 
 export const assets = {
   console,
@@ -42,4 +43,5 @@ export const assets = {
   thirdgold,
   fourthgold,
   lowestgold,
+  zebion,
 };
