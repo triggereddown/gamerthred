@@ -1,21 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ✅ FIXED
 import { Mail, Lock, UserPlus } from "lucide-react";
-import { assets } from "../../assets/assets"; // adjust if path differs
+import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+
+
 const Signup = () => {
-  let tokenFromLocalStorage = localStorage.getItem("token");
   const navigate = useNavigate();
-  if (tokenFromLocalStorage) {
-    const decodedToken = jwtDecode(tokenFromLocalStorage);
-    const currentTime = Date.now() / 1000; // Convert to seconds
-    if (decodedToken.exp && decodedToken.exp < currentTime) {
-      localStorage.clear(); // Token has expired
-    } else {
-      navigate("/profile");
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp && decoded.exp < currentTime) {
+        localStorage.clear();
+      } else {
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error("Invalid token:", err);
+      localStorage.clear();
     }
   }
+}, [navigate]);
   const [formData, setFormData] = useState({
     email: "",
     username: "",

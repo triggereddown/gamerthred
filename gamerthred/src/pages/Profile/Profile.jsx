@@ -6,32 +6,51 @@ import { jwtDecode } from "jwt-decode";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("Rexui");
+  const [username, setUsername] = useState("ERROR");
   const [editing, setEditing] = useState(false);
-  const [tempName, setTempName] = useState(username);
-  /*
   const [xp, setXp] = useState(0);
+  const [tempName, setTempName] = useState("");
+  const [games, setGames] = useState([]);
+
+  // const [xp, setXp] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
-    } else {
-      const decoded = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      if (decoded.exp && decoded.exp < currentTime) {
-        localStorage.clear();
-        navigate("/login");
-      } else {
-        setUsername(decoded.name || "Rexui");
-        setXp(decoded.xp || 0);
-      }
+      return;
     }
+
+    const decoded = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+
+    if (decoded.exp && decoded.exp < currentTime) {
+      localStorage.clear();
+      navigate("/login");
+      return;
+    }
+
+    // Fetch user profile data from API
+    fetch("https://gamerthred.com/api/get_user_profile.php", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          const { name, xp, games } = data.data;
+          setUsername(name);
+          setXp(xp || 0);
+          setGames(games || []);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching profile:", err);
+      });
   }, []);
-  */
-
-  let xp = 650; // remove this when fething xp dynamically
-
+  
   const getLevelInfo = (xp) => {
     if (xp >= 1500) return { level: 5, badge: "Clutcher Badge" };
     if (xp >= 900) return { level: 4, badge: "Synced Badge" };
@@ -51,9 +70,35 @@ const Profile = () => {
       : Math.floor(((xp - prevLevelXp) / (nextLevelXp - prevLevelXp)) * 100);
 
   const handleEditToggle = () => {
-    if (editing) setUsername(tempName);
-    setEditing(!editing);
-  };
+  if (editing) {
+    // Save name to backend
+    const token = localStorage.getItem("token");
+    fetch("https://gamerthred.com/api/update_username.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ new_name: tempName }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          setUsername(tempName);
+        } else {
+          alert("❌ Failed to update username");
+        }
+      })
+      .catch((err) => {
+        console.error("Update error:", err);
+        alert("Something went wrong while updating name.");
+      });
+  } else {
+    setTempName(username); // Pre-fill with current name when editing starts
+  }
+
+  setEditing(!editing);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex items-center justify-center font-sans">
@@ -122,28 +167,21 @@ const Profile = () => {
         </div>
 
         {/* Games Playing */}
-        <div className="mt-6">
+        {/* <div className="mt-6">
           <h3 className="font-bold text-sm uppercase tracking-wider mb-2">
             Now Playing
           </h3>
           <div className="flex justify-center gap-4">
-            <img
-              src="/games/valorant.jpg"
-              alt="Valorant"
-              className="h-12 w-12 rounded-lg object-cover"
-            />
-            <img
-              src="/games/minecraft.jpg"
-              alt="Minecraft"
-              className="h-12 w-12 rounded-lg object-cover"
-            />
-            <img
-              src="/games/fifa.jpg"
-              alt="FIFA"
-              className="h-12 w-12 rounded-lg object-cover"
-            />
+            {games.map((src, idx) => (
+              <img
+                key={idx}
+                src={src}
+                alt={`Game ${idx + 1}`}
+                className="h-12 w-12 rounded-lg object-cover"
+              />
+            ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

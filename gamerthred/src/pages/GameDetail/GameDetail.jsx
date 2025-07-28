@@ -1,96 +1,95 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const GameDetail = () => {
   const { gameId } = useParams();
   const [game, setGame] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [submittedTasks, setSubmittedTasks] = useState([]);
   const [socialTasksCompleted, setSocialTasksCompleted] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const hardcodedGames = [
-      {
-        id: "t001",
-        name: "Build a Mini JCB",
-        description: "Assemble a virtual JCB model using the provided parts.",
-      },
-      {
-        id: "t002",
-        name: "Plant a Tree in Simulation",
-        description: "Use the farming sim to plant and grow a tree.",
-      },
-    ];
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
 
-    const hardcodedTasks = {
-      t001: [
-        {
-          task_id: "task1",
-          task_name: "Assemble Base",
-          task_description: "Attach wheels and set up base.",
-          full_description:
-            "Go to Level 2 of the simulator. Attach all 4 wheels using the tool provided. Submit a screenshot once the base is completely assembled.",
-          points: 30,
-          demo_image_url:
-            "https://via.placeholder.com/400x200.png?text=Assemble+Base+Demo",
-          total_users: 50,
-          joined_users: 30,
-          time: "30m",
-          type: "weekly",
-        },
-        {
-          task_id: "task2",
-          task_name: "Mount Arm",
-          task_description: "Fix the digging arm and calibrate controls.",
-          full_description:
-            "In Level 4, fix the mechanical arm on the base and calibrate it. Submit a screenshot from the calibration panel with success message.",
-          points: 50,
-          demo_image_url:
-            "https://via.placeholder.com/400x200.png?text=Mount+Arm+Demo",
-          total_users: 50,
-          joined_users: 25,
-          time: "1h",
-          type: "daily",
-        },
-      ],
-      t002: [
-        {
-          task_id: "task4",
-          task_name: "Dig Soil",
-          task_description: "Dig a hole to plant the seedling.",
-          full_description:
-            "Go to Level 3. Use the shovel tool to dig a 1-meter hole. Submit a screenshot showing the completed dig site.",
-          points: 25,
-          demo_image_url:
-            "https://via.placeholder.com/400x200.png?text=Dig+Soil+Demo",
-          total_users: 30,
-          joined_users: 22,
-          time: "20m",
-          type: "weekly",
-        },
-        {
-          task_id: "task5",
-          task_name: "Water Tree",
-          task_description: "Regularly water the plant to grow it fully.",
-          full_description:
-            "Advance to Level 5. Water the tree for 3 simulated days. Submit a screenshot of the fully grown tree.",
-          points: 35,
-          demo_image_url:
-            "https://via.placeholder.com/400x200.png?text=Water+Tree+Demo",
-          total_users: 30,
-          joined_users: 25,
-          time: "40m",
-          type: "monthly",
-        },
-      ],
+        const [gameRes, taskRes, submissionRes] = await Promise.all([
+          fetch("https://gamerthred.com/api/get_all_games.php"),
+          fetch("https://gamerthred.com/api/all_tasks_grouped.php"),
+          fetch("https://gamerthred.com/api/check_submissions.php", { headers }),
+        ]);
+
+        const gameData = await gameRes.json();
+        const taskData = await taskRes.json();
+        const submissionData = await submissionRes.json();
+
+        if (gameData.status === 200 && taskData.status === 200) {
+          const foundGame = gameData.data.find((g) => g.id === gameId);
+          setGame(foundGame || null);
+          const gameTasks = taskData.data[gameId] || [];
+          setTasks(gameTasks);
+        }
+
+        if (submissionData.status === 200) {
+          setSubmittedTasks(submissionData.submitted_tasks || []);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setGame(hardcodedGames.find((g) => g.id === gameId));
-    setTasks(hardcodedTasks[gameId] || []);
+    fetchData();
   }, [gameId]);
 
-  const handleTaskSubmit = (e, taskName) => {
+  const handleTaskSubmit = async (e, taskId, groupId) => {
     e.preventDefault();
-    alert(`Submitted ${taskName} successfully!`);
+
+    const fileInput = e.target.querySelector('input[type="file"]');
+    const image = fileInput?.files[0];
+
+    if (!image) {
+      alert("Please upload an image.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You are not logged in.");
+      return;
+    }
+
+    const decoded = jwtDecode(token);
+    const userId = decoded?.id;
+
+    const formData = new FormData();
+    formData.append("user_id", userId);
+    formData.append("task_id", taskId);
+    formData.append("group_id", groupId);
+    formData.append("screenshot", image);
+    formData.append("token", token);
+
+    try {
+      const res = await fetch("https://gamerthred.com/api/submit_task.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+      if (result.status === 200) {
+        alert("Task submitted successfully!");
+        setSubmittedTasks((prev) => [...prev, taskId]); // update submitted task list
+      } else {
+        alert("Submission failed: " + result.msg);
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Error submitting task.");
+    }
   };
 
   const handleSocialTaskSubmit = (platform) => {
@@ -101,105 +100,130 @@ const GameDetail = () => {
   const socialMediaTasks = [
     {
       platform: "Instagram",
-      link: "https://instagram.com/brandhandle",
+      link: "https://www.instagram.com/gamerthred/?igsh=dGthdDJ4eGlmYjlr#",
       icon: "📸",
       points: 10,
     },
     {
       platform: "Discord",
-      link: "https://discord.gg/invitecode",
+      link: "https://discord.com/invite/K5s4tmHyWz",
       icon: "💬",
       points: 15,
     },
     {
-      platform: "Twitter",
-      link: "https://twitter.com/brandhandle",
+      platform: "Linkedin",
+      link: "https://www.linkedin.com/company/gamerthred/",
       icon: "🐦",
       points: 10,
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen text-white flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!game) {
+    return (
+      <div className="min-h-screen text-white flex items-center justify-center">
+        Game not found.
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white py-10 px-4 md:px-10">
       <h1 className="text-3xl font-bold mb-10 text-center">
-        Missions for {game?.name || `Game ${gameId}`}
+        Missions for {game.name}
       </h1>
 
-      {/* Game Tasks Section */}
+      {/* Tasks List */}
       <div className="flex flex-col items-center gap-8">
-        {tasks.map((task) => (
-          <form
-            key={task.task_id}
-            onSubmit={(e) => handleTaskSubmit(e, task.task_name)}
-            className="relative w-full max-w-2xl bg-white bg-opacity-10 p-6 rounded-xl shadow-lg backdrop-blur-md border-2 border-purple-500 hover:border-purple-400 transition group"
-          >
-            {/* Points Tag */}
-            <div className="absolute top-4 right-4 bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md z-20">
-              +{task.points} GTC
-            </div>
+        {tasks.map((task) => {
+          const isSubmitted = submittedTasks.includes(task.task_id);
+          return (
+            <form
+              key={task.task_id}
+              onSubmit={(e) => handleTaskSubmit(e, task.task_id, gameId)}
+              className={`relative w-full max-w-2xl p-6 rounded-xl shadow-lg backdrop-blur-md transition group ${
+                isSubmitted
+                  ? "bg-green-900 border border-green-600"
+                  : "bg-white bg-opacity-10 border-2 border-purple-500 hover:border-purple-400"
+              }`}
+            >
+              <div className={`absolute top-4 right-4 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md z-20 ${
+                isSubmitted ? "bg-green-700" : "bg-purple-700"
+              }`}>
+                +{task.points} GTC
+              </div>
 
-            {/* Mission Type Glow Tag */}
-            <div className="absolute top-4 left-4 z-20">
-              <span className="px-3 py-1 text-xs font-bold text-yellow-200 bg-yellow-600 bg-opacity-30 border border-yellow-400 rounded-full shadow-md animate-pulse">
-                {task.type?.toUpperCase()} MISSION
-              </span>
-            </div>
-
-            {/* Glowing Border Background */}
-            <div className="absolute -inset-0.5 rounded-xl blur-xl bg-purple-700 opacity-30 group-hover:opacity-60 transition-all pointer-events-none z-0" />
-
-            {/* Content */}
-            <div className="relative z-10">
-              <h2 className="text-xl font-semibold mb-3 text-center">
-                {task.task_name}
-              </h2>
-
-              <p className="text-sm text-gray-300 mb-4">
-                {task.full_description}
-              </p>
-
-              {/* Demo Image */}
-              {task.demo_image_url && (
-                <div className="mb-4">
-                  <p className="text-xs text-gray-400 mb-1">Demo Screenshot:</p>
-                  <img
-                    src={task.demo_image_url}
-                    alt={`Demo for ${task.task_name}`}
-                    className="w-full rounded-lg border border-purple-600"
-                  />
-                </div>
-              )}
-
-              {/* Screenshot Upload */}
-              <input
-                type="file"
-                accept="image/*"
-                className="w-full mb-4 p-2 rounded bg-white text-black"
-                required
-              />
-
-              {/* Time & Participants */}
-              <div className="flex justify-between items-center text-xs text-gray-400 mb-4">
-                <span className="bg-purple-800 px-2 py-1 rounded-full text-white text-xs font-semibold">
-                  ⏱ Estimated: {task.time}
-                </span>
-                <span>
-                  👥 Joined: {task.joined_users}/{task.total_users}
+              <div className="absolute top-4 left-4 z-20">
+                <span className={`px-3 py-1 text-xs font-bold rounded-full shadow-md ${
+                  isSubmitted
+                    ? "text-green-200 bg-green-600 bg-opacity-30 border border-green-400"
+                    : "text-yellow-200 bg-yellow-600 bg-opacity-30 border border-yellow-400 animate-pulse"
+                }`}>
+                  {isSubmitted ? "COMPLETED" : `${task.type?.toUpperCase()} MISSION`}
                 </span>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-2 bg-purple-600 hover:bg-purple-700 transition text-white rounded font-bold"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
-        ))}
+              <div className="relative z-10">
+                <h2 className="text-xl font-semibold mb-3 text-center">{task.task_name}</h2>
+                <p className="text-sm text-gray-300 mb-4">
+                  {task.full_description}
+                </p>
+
+                {task.demo_image_url && (
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-400 mb-1">
+                      Demo Screenshot:
+                    </p>
+                    <img
+                      src={task.demo_image_url}
+                      alt={`Demo for ${task.task_name}`}
+                      className="w-full rounded-lg border border-purple-600"
+                    />
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="w-full mb-4 p-2 rounded bg-white text-black"
+                  disabled={isSubmitted}
+                  required={!isSubmitted}
+                />
+
+                <div className="flex justify-between items-center text-xs text-gray-400 mb-4">
+                  <span className="bg-purple-800 px-2 py-1 rounded-full text-white text-xs font-semibold">
+                    ⏱ Estimated: {task.time}
+                  </span>
+                  <span>
+                    👥 Joined: {task.joined_users}/{task.total_users}
+                  </span>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitted}
+                  className={`w-full py-2 rounded font-bold transition ${
+                    isSubmitted
+                      ? "bg-green-500 cursor-not-allowed"
+                      : "bg-purple-600 hover:bg-purple-700"
+                  }`}
+                >
+                  {isSubmitted ? "Already Submitted" : "Submit"}
+                </button>
+              </div>
+            </form>
+          );
+        })}
       </div>
 
-      {/* Social Media Tasks */}
+      {/* Social Media Section */}
       <div className="mt-16 max-w-5xl mx-auto">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           Social Media Bonus Tasks
