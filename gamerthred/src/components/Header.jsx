@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import { Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [gamePreviewData, setGamePreviewData] = useState([]);
@@ -120,9 +121,11 @@ const Header = () => {
               alt="Console"
               className="w-60 sm:w-72 mx-auto animate-[float_3s_ease-in-out_infinite]"
             />
-            <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
-              Zebion Exclusive Here
-            </button>
+            <Link to="/missiondetails">
+              <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
+                Zebion Exclusive Here
+              </button>
+            </Link>
           </div>
 
           <div>
@@ -147,9 +150,11 @@ const Header = () => {
             alt="Console"
             className="w-[600px] animate-[float_3s_ease-in-out_infinite]"
           />
-          <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
-            Zebion Exclusive Here
-          </button>
+          <Link to="/missiondetails">
+            <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
+              Zebion Exclusive Here
+            </button>
+          </Link>
         </div>
       </div>
 
