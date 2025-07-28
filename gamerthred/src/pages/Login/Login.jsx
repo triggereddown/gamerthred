@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect } from "react";
 import { Mail, Lock, LogIn } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -6,16 +6,23 @@ import { jwtDecode } from "jwt-decode";
 const Login = ({ setShowLogin }) => {
   const navigate = useNavigate();
 
-  let tokenFromLocalStorage = localStorage.getItem("token");
-  if (tokenFromLocalStorage) {
-    const decodedToken = jwtDecode(tokenFromLocalStorage);
-    const currentTime = Date.now() / 1000;
-    if (decodedToken.exp && decodedToken.exp < currentTime) {
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp && decoded.exp < currentTime) {
+        localStorage.clear();
+      } else {
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error("Invalid token:", err);
       localStorage.clear();
-    } else {
-      navigate("/profile");
     }
   }
+}, [navigate]);
 
   const [formData, setFormData] = useState({
     email: "",

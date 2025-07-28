@@ -24,6 +24,7 @@ import Forgot from "./pages/Forgot/Forgot";
 import Leaderboard from "./pages/Leaderboard/Leaderboard";
 import Rewards from "./pages/Rewards/Rewards";
 import Missions from "./pages/Missions/Missions";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -46,6 +47,7 @@ const AppWrapper = () => {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/missions" element={<Missions />} />
+        <Route path="/changepassword/:vs_code" element={<ForgotPassword />} />
       </Routes>
 
       {location.pathname === "/" && <About />}

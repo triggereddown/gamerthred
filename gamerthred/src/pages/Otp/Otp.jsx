@@ -61,6 +61,8 @@ const OtpVerification = () => {
           localStorage.setItem("token", token);
           console.log(token);
           navigate("/profile");
+        }else if(data.status === 201){
+          navigate(`/changepassword/${data.reset_token}`)
         } else {
           alert("❌ " + data.msg);
         }

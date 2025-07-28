@@ -1,14 +1,33 @@
 import React, { useState } from "react";
 import { Mail, Send } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
+const navigate = useNavigate();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Forgot password request sent for:", email);
-    // Optionally send a fetch request to your backend
-  };
+  e.preventDefault();
+  fetch("https://gamerthred.com/api/Forget.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }), // <-- Corrected
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status == 205) {
+        navigate(`/verify-otp/${email}`); // <-- Use email here too
+      } else {
+        alert(data.msg || "Something went wrong.");
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] flex items-center justify-center px-6 py-20 font-sans relative overflow-hidden">

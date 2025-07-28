@@ -4,6 +4,7 @@ import { assets } from "../assets/assets";
 import { Mail } from "lucide-react";
 
 const Header = () => {
+    const [gamePreviewData, setGamePreviewData] = useState([]);
   const [timeLeft, setTimeLeft] = useState({
     days: "00",
     hours: "00",
@@ -13,28 +14,39 @@ const Header = () => {
 
   const navigate = useNavigate();
 
-  const gamePreviewData = [
-    {
-      task_id: "t001",
-      task_name: "Build a Mini JCB",
-      task_description:
-        "Assemble a virtual JCB model using the provided parts and instructions.",
-      image_url: "https://via.placeholder.com/300x200?text=JCB+Game",
-      total_users: 100,
-      joined_users: 76,
-      time: "2h",
-    },
-    {
-      task_id: "t002",
-      task_name: "Plant a Tree in Simulation",
-      task_description:
-        "Use the farming sim to plant and grow a tree to maturity.",
-      image_url: "https://via.placeholder.com/300x200?text=Plant+Tree",
-      total_users: 50,
-      joined_users: 32,
-      time: "1h 30m",
-    },
-  ];
+ useEffect(() => {
+  fetch("https://gamerthred.com/api/all_tasks_grouped.php")
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === 200) {
+        const groupedTasks = data.data;
+
+        const allTasksWithGroupKey = [];
+
+        for (const [groupKey, tasks] of Object.entries(groupedTasks)) {
+          tasks.forEach((task) => {
+            allTasksWithGroupKey.push({
+              ...task,
+              group_id: groupKey, // <-- Add group key to each task
+            });
+          });
+        }
+
+        // Shuffle and pick 2 random tasks
+        const randomTasks = allTasksWithGroupKey
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 2);
+
+        setGamePreviewData(randomTasks);
+      }
+    })
+    .catch((err) => {
+      console.error("Failed to fetch tasks:", err);
+    });
+}, []);
+
+
+
 
   useEffect(() => {
     const targetDate = new Date("2025-07-28T12:00:00+05:30");
@@ -90,10 +102,10 @@ const Header = () => {
             </span>
           </h1> */}
 
-          <h2 className="text-4xl sm:text-6xl font-black text-white leading-tight">
-            We're <br />
+          <h2 className="text-4xl sm:text-7xl font-black text-white leading-tight">
+           EARN WHAT <br />
             <span className="text-purple-500 animate-pulse">
-              Launching Soon
+              YOU DESERVE
             </span>
           </h2>
 
@@ -107,7 +119,7 @@ const Header = () => {
           </div>
 
           {/* Countdown Timer */}
-          <div className="flex flex-row gap-x-4 justify-center md:justify-start text-white font-semibold text-lg sm:text-xl">
+          {/* <div className="flex flex-row gap-x-4 justify-center md:justify-start text-white font-semibold text-lg sm:text-xl">
             {[
               { label: "Days", value: timeLeft.days },
               { label: "Hours", value: timeLeft.hours },
@@ -124,35 +136,45 @@ const Header = () => {
                 <p className="text-xs sm:text-sm">{item.label}</p>
               </div>
             ))}
+          </div> */}
+          <div>
+            <h2 className="text-2xl sm:text-4xl font-black text-white leading-tight">
+            PLAY | PROGRESS | WIN
+          </h2>
           </div>
 
-          <p className="text-white font-bold px-4 sm:px-0">
-            We’re building something for the everyday gamers — fair, rewarding,
-            and real.
-          </p>
+          <div className="bg-gradient-to-br from-black/40 to-purple-900/20 backdrop-blur-md rounded-xl border border-purple-500/40 p-6 mt-8 max-w-xl mr-auto ml-0 text-white shadow-[0_0_20px_rgba(128,0,255,0.2)] transition-all duration-300 hover:shadow-purple-500/30">
+  <p className="text-base sm:text-lg font-mono leading-relaxed text-left animate-fade-in">
+    🎮 Join the gaming revolution where every match ⚔️ matters, every skill 🧠 pays off, and every click 🖱️ brings you closer to real-world rewards 💰!
+  </p>
+</div>
 
-          <a
+
+
+
+
+          {/* <a
             href="https://forms.gle/Vvx7RgXswjjiWvcZ9"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto text-center bg-purple-600 hover:bg-fuchsia-600 transition-all px-6 py-4 rounded-full text-white text-base sm:text-lg font-semibold shadow-lg"
           >
             🚀 Join the Waitlist
-          </a>
+          </a> */}
 
-          <a
+          {/* <a
             href="mailto:gamerthred1@gmail.com"
             className="mt-3 bg-purple-600 hover:bg-fuchsia-600 transition-all px-6 py-3 rounded-full text-white text-md font-semibold shadow-lg flex items-center justify-center space-x-2"
           >
             <Mail className="w-5 h-5" />
             <span>Contact Us</span>
-          </a>
+          </a> */}
         </div>
 
         {/* Desktop Console Image */}
         <div className="hidden md:flex flex-1 justify-center">
           <img
-            src={assets.brand}
+            src={assets.consolee}
             alt="Console"
             className="w-[600px] animate-[float_3s_ease-in-out_infinite]"
           />
@@ -167,25 +189,27 @@ const Header = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {gamePreviewData.map((game) => (
             <div
-              key={game.task_id}
-              onClick={() => navigate(`/games/${game.task_id}`)}
-              className="cursor-pointer p-4 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-purple-700/70 hover:border-purple-400 group"
-            >
-              <img
-                src={game.image_url}
-                alt={game.task_name}
-                className="w-full h-40 object-cover rounded-md mb-4 border border-white/20 group-hover:shadow-md group-hover:shadow-purple-400"
-              />
-              <h2 className="text-xl font-semibold text-center mb-2 group-hover:text-purple-300">
-                {game.task_name}
-              </h2>
-              <p className="text-sm text-gray-300 text-center">
-                {game.task_description}
-              </p>
-              <p className="text-xs text-gray-400 mt-2 text-center">
-                ⏱ {game.time} • 👥 {game.joined_users}/{game.total_users}
-              </p>
-            </div>
+  key={game.task_id}
+  onClick={() => navigate(`/games/${game.group_id}`)}
+  className="cursor-pointer p-6 rounded-xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-purple-700/70 hover:border-purple-400 group min-h-[500px]"
+>
+  <img
+    src={game.demo_image_url}
+    alt={game.task_name}
+    className="w-full h-72 object-cover rounded-md mb-5 border border-white/20 group-hover:shadow-md group-hover:shadow-purple-400"
+  />
+  <h2 className="text-3xl font-bold text-center mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-500 text-transparent bg-clip-text group-hover:from-purple-300 group-hover:to-pink-300 transition-all duration-300">
+  {game.task_name}
+</h2>
+  <p className="text-xl text-gray-300 text-center">
+    {game.task_description}
+  </p>
+  <p className="text-xs text-gray-400 mt-3 text-center">
+    ⏱ {game.time} • 👥 {game.joined_users}/{game.total_users}
+  </p>
+</div>
+
+
           ))}
         </div>
       </div>
