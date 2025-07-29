@@ -76,24 +76,24 @@ const Header = () => {
           }
 
           const days = String(
-            Math.floor(diff / (1000 * 60 * 60 * 24)),
+            Math.floor(diff / (1000 * 60 * 60 * 24))
           ).padStart(2, "0");
           const hours = String(
-            Math.floor((diff / (1000 * 60 * 60)) % 24),
+            Math.floor((diff / (1000 * 60 * 60)) % 24)
           ).padStart(2, "0");
           const minutes = String(
-            Math.floor((diff / (1000 * 60)) % 60),
+            Math.floor((diff / (1000 * 60)) % 60)
           ).padStart(2, "0");
           const seconds = String(Math.floor((diff / 1000) % 60)).padStart(
             2,
-            "0",
+            "0"
           );
 
           return {
             ...game,
             countdown: { days, hours, minutes, seconds },
           };
-        }),
+        })
       );
     }, 1000);
 
@@ -114,18 +114,21 @@ const Header = () => {
             <span className="text-purple-500 animate-pulse">YOU DESERVE</span>
           </h2>
 
-          {/* Mobile Console Image */}
-          <div className="block md:hidden flex flex-col items-center">
-            <img
-              src={assets.zebion}
-              alt="Console"
-              className="w-60 sm:w-72 mx-auto animate-[float_3s_ease-in-out_infinite]"
-            />
-            <Link to="/missiondetails">
-              <button className="mt-4 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
-                Zebion Exclusive Here
-              </button>
-            </Link>
+          {/* Mobile Console Card */}
+          <div className="block md:hidden w-full max-w-xs mx-auto">
+            <div className="bg-gradient-to-br from-white/5 to-purple-900/10 border border-purple-500/20 rounded-2xl shadow-xl backdrop-blur-md p-6 flex flex-col items-center transition-all duration-300 hover:shadow-purple-600/40 hover:border-purple-500">
+              <img
+                src={assets.zebion}
+                alt="Console"
+                className="w-52 sm:w-60 mx-auto animate-[float_3s_ease-in-out_infinite] drop-shadow-xl"
+              />
+
+              <Link to="/missiondetails">
+                <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg transition-all">
+                  Zebion Exclusive Here
+                </button>
+              </Link>
+            </div>
           </div>
 
           <div>
@@ -144,17 +147,21 @@ const Header = () => {
         </div>
 
         {/* Desktop Console Image */}
+        {/* Desktop Console Card */}
         <div className="hidden md:flex flex-col items-center flex-1 justify-center">
-          <img
-            src={assets.zebion}
-            alt="Console"
-            className="w-[600px] animate-[float_3s_ease-in-out_infinite]"
-          />
-          <Link to="/missiondetails">
-            <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-md transition">
-              Zebion Exclusive Here
-            </button>
-          </Link>
+          <div className="bg-gradient-to-br from-white/5 to-purple-900/10 border border-purple-500/20 rounded-2xl shadow-xl backdrop-blur-md p-6 flex flex-col items-center transition-all duration-300 hover:shadow-purple-600/40 hover:border-purple-500">
+            <img
+              src={assets.zebion}
+              alt="Console"
+              className="w-80 lg:w-[350px] xl:w-[400px] animate-[float_3s_ease-in-out_infinite] drop-shadow-xl"
+            />
+
+            <Link to="/missiondetails">
+              <button className="mt-6 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg transition-all">
+                Zebion Exclusive Here
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
 
