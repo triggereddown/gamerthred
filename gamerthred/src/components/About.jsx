@@ -1,97 +1,155 @@
 import React from "react";
-import { assets } from "../assets/assets"; // Ensure this is correctly pointing to your assets file
+import { assets } from "../assets/assets";
+import { motion } from "framer-motion";
 
-const About = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white px-4 py-16 md:px-24 font-sans">
-      <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-12">
-        About GamerThred
-      </h1>
+const fadeUp = {
+  hidden:  { opacity: 0, y: 32 },
+  visible: (i) => ({
+    opacity: 1, y: 0,
+    transition: { duration: 0.7, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
 
-      <div className="flex flex-col md:flex-row gap-8 overflow-x-auto md:overflow-visible pb-4">
-        {/* Card 1: About GamerThred */}
-        <div className="min-w-[300px] md:flex-1 bg-white bg-opacity-10 p-6 rounded-2xl shadow-lg backdrop-blur-md transition hover:scale-[1.01] duration-300 flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-purple-400">
-              About GamerThred
-            </h2>
-            <p className="text-2xl text-gray-200 leading-relaxed mb-4">
-              Welcome to{" "}
-              <span className="font-bold text-purple-300">GamerThred</span>,
-              where gamers earn rewards for playing their favorite games! We
-              believe every player should be rewarded. Our platform lets you
-              complete fun, game-specific missions to earn cool stuff like
-              T-shirts and gaming gear.
-            </p>
-          </div>
-          <img
-            src={assets.firstgold}
-            alt="decor"
-            className="w-full mt-4 rounded-xl object-cover"
-          />
-        </div>
+const cards = [
+  {
+    title: "About GamerThred",
+    accent: "purple",
+    body: (
+      <>
+        Welcome to{" "}
+        <span style={{ color: "#a78bfa", fontWeight: 700 }}>GamerThred</span>,
+        where gamers earn rewards for playing their favorite games! We believe every player should be rewarded. Our platform lets you complete fun, game-specific missions to earn cool stuff like T-shirts and gaming gear.
+      </>
+    ),
+    imgKey: "firstgold",
+  },
+  {
+    title: "What We Do",
+    accent: "cyan",
+    body: "With one affordable monthly subscription, you can unlock missions in our platform. Hit goals like reaching Diamond rank or completing quests, and claim awesome rewards. The more you play, the more you earn!",
+    imgKey: "firstblue",
+  },
+  {
+    title: "Why GamerThred?",
+    accent: "purple",
+    list: [
+      { label: "For All Gamers:",      text: "Casual or pro, everyone gets rewarded." },
+      { label: "Easy & Fun:",          text: "Just play, complete missions, and grab your rewards." },
+      { label: "Real Prizes:",         text: "Get gaming gear, apparel, and more." },
+      { label: "Community Vibes:",     text: "Join gamers who share your passion." },
+    ],
+    goal: "We want every gamer to feel valued. GamerThred turns your in-game wins into real-world rewards.",
+    imgKey: "thirdgold",
+  },
+];
 
-        {/* Card 2: What We Do */}
-        <div className="min-w-[300px] md:flex-1 bg-white bg-opacity-10 p-6 rounded-2xl shadow-lg backdrop-blur-md transition hover:scale-[1.01] duration-300 flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-purple-400">
-              What We Do
-            </h2>
-            <p className=" text-gray-200 leading-relaxed mb-4 text-2xl">
-              With one affordable monthly subscription, you can unlock missions
-              in our platform. Hit goals like reaching Diamond rank or
-              completing quests, and claim awesome rewards. The more you play,
-              the more you earn!
-            </p>
-          </div>
-          <img
-            src={assets.firstblue}
-            alt="decor"
-            className="w-full mt-4 rounded-xl object-cover"
-          />
-        </div>
+const accentMap = {
+  purple: { color: "#a78bfa", border: "rgba(124,58,237,0.25)", glow: "rgba(124,58,237,0.1)" },
+  cyan:   { color: "#22D3EE", border: "rgba(34,211,238,0.25)",  glow: "rgba(34,211,238,0.08)" },
+};
 
-        {/* Card 3: Why GamerThred + Goal */}
-        <div className="min-w-[300px] md:flex-1 bg-white bg-opacity-10 p-6 rounded-2xl shadow-lg backdrop-blur-md transition hover:scale-[1.01] duration-300 flex flex-col justify-between">
-          <div>
-            <h2 className="text-2xl font-semibold mb-4 text-purple-400">
-              Why GamerThred?
-            </h2>
-            <ul className="list-disc text-base text-gray-200 pl-5 space-y-2 mb-6">
-              <li>
-                <strong>For All Gamers:</strong> Casual or pro, everyone gets
-                rewarded.
-              </li>
-              <li>
-                <strong>Easy & Fun:</strong> Just play, complete missions, and
-                grab your rewards.
-              </li>
-              <li>
-                <strong>Real Prizes:</strong> Get gaming gear, apparel, and
-                more.
-              </li>
-              <li>
-                <strong>Community Vibes:</strong> Join gamers who share your
-                passion.
-              </li>
-            </ul>
-            <h3 className="text-xl font-semibold mb-2 text-purple-400">
-              Our Goal
-            </h3>
-            <p className="text-base text-gray-200 leading-relaxed">
-              We want every gamer to feel valued. GamerThred turns your in-game
-              wins into real-world rewards.
-            </p>
-            <img
-              src={assets.thirdgold}
-              alt="decor"
-              className="w-full mt-4 rounded-xl object-cover"
-            />
-          </div>
-        </div>
+const About = () => (
+  <section
+    className="relative overflow-hidden"
+    style={{ background: "var(--bg-surface)", borderTop: "1px solid rgba(255,255,255,0.05)" }}
+  >
+    {/* Ambient glows */}
+    <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full pointer-events-none"
+      style={{ background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)", filter: "blur(60px)" }} />
+    <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full pointer-events-none"
+      style={{ background: "radial-gradient(circle, rgba(34,211,238,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
+
+    <div className="section-padding max-container relative z-10">
+      {/* Section header */}
+      <div className="flex flex-col items-center text-center mb-16 gap-4">
+        <motion.div
+          initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+          transition={{ duration:0.6, ease:[0.22,1,0.36,1] }}
+          className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wide"
+          style={{ background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)", color:"var(--text-primary)" }}>
+          Our Story
+        </motion.div>
+
+        <motion.h2
+          initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
+          transition={{ duration:0.6, delay:0.1, ease:[0.22,1,0.36,1] }}
+          className="font-heading font-semibold tracking-tight"
+          style={{ fontSize:"clamp(32px,5vw,64px)", color:"var(--text-primary)" }}>
+          About GamerThred
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }}
+          transition={{ duration:0.6, delay:0.2 }}
+          className="text-sm max-w-lg" style={{ color:"var(--text-muted)" }}>
+          A platform built by gamers, for gamers — where your in-game achievements translate into real-world value.
+        </motion.p>
+      </div>
+
+      {/* Cards grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {cards.map((card, i) => {
+          const ac = accentMap[card.accent];
+          return (
+            <motion.div
+              key={card.title}
+              custom={i}
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once:true, margin:"-60px" }}
+              className="glass-card relative flex flex-col overflow-hidden p-0"
+            >
+              {/* Top accent line */}
+              <div className="w-full h-[2px]" style={{ background:`linear-gradient(90deg, ${ac.color}, transparent)` }} />
+
+              <div className="p-7 flex flex-col gap-5 flex-1">
+                {/* Title */}
+                <h3 className="text-lg font-heading font-semibold" style={{ color: "var(--text-primary)" }}>
+                  {card.title}
+                </h3>
+
+                {/* Body */}
+                {card.body && (
+                  <p className="text-sm leading-relaxed" style={{ color:"var(--text-muted)" }}>
+                    {card.body}
+                  </p>
+                )}
+
+                {/* List */}
+                {card.list && (
+                  <ul className="flex flex-col gap-3">
+                    {card.list.map(({ label, text }) => (
+                      <li key={label} className="flex gap-2 text-sm" style={{ color:"var(--text-muted)" }}>
+                        <span className="mt-0.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background:ac.color, marginTop:5 }} />
+                        <span><strong style={{ color:"var(--text-primary)", fontWeight:600 }}>{label}</strong> {text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                {/* Goal */}
+                {card.goal && (
+                  <div className="mt-2 p-4 rounded-xl text-sm leading-relaxed" style={{ background:"rgba(124,58,237,0.08)", border:"1px solid rgba(124,58,237,0.15)", color:"var(--text-muted)" }}>
+                    <span className="font-semibold block mb-1" style={{ color:"#a78bfa" }}>Our Goal</span>
+                    {card.goal}
+                  </div>
+                )}
+
+                {/* Image */}
+                {assets[card.imgKey] && (
+                  <div className="mt-auto overflow-hidden rounded-xl border border-white/5">
+                    <img src={assets[card.imgKey]} alt={card.title}
+                      className="w-full object-cover transition-transform duration-700 hover:scale-105 rounded-xl" />
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
-  );
-};
+  </section>
+);
 
 export default About;

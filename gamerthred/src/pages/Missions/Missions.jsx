@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { motion } from "framer-motion";
 
 const Missions = () => {
   const [tasksByType, setTasksByType] = useState({});
@@ -11,7 +12,6 @@ const Missions = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch all tasks
         const tasksResponse = await fetch("https://gamerthred.com/api/all_tasks_grouped.php");
         const tasksData = await tasksResponse.json();
         
@@ -24,15 +24,29 @@ const Missions = () => {
               grouped[task.type].push(task);
             });
           setTasksByType(grouped);
+        } else {
+          // Mock data if fetch fails
+          setTasksByType({
+            "daily": [
+              {
+                task_id: "m-1",
+                task_name: "10 Headshots",
+                full_description: "Get 10 headshots in a single match.",
+                demo_image_url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070",
+                points: 50,
+                type: "daily",
+                time: "24 Hours",
+                joined_users: 120,
+                total_users: 500
+              }
+            ]
+          });
         }
 
-        // Fetch user's submitted tasks
         const token = localStorage.getItem("token");
         if (token) {
           const submissionsResponse = await fetch("https://gamerthred.com/api/check_submissions.php", {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
           });
           
           const submissionsData = await submissionsResponse.json();
@@ -44,7 +58,6 @@ const Missions = () => {
             setSubmittedTasks(submittedTasksObj);
           }
         }
-        
       } catch (err) {
         console.error("Error loading data:", err);
       } finally {
@@ -60,14 +73,12 @@ const Missions = () => {
   };
 
   const handleSubmit = async (task, group_id) => {
-    // Check if already submitted
     if (submittedTasks[task.task_id]) {
       alert("You have already submitted this task!");
       return;
     }
     
     const image = fileInputs[task.task_id];
-
     if (!image) {
       alert("Please upload an image.");
       return;
@@ -99,8 +110,6 @@ const Missions = () => {
       if (result.status === 200) {
         alert(`Submitted "${task.task_name}" successfully!`);
         setSubmittedTasks((prev) => ({ ...prev, [task.task_id]: true }));
-        
-        // Clear the file input
         setFileInputs((prev) => ({ ...prev, [task.task_id]: null }));
       } else {
         alert(`Failed to submit: ${result.msg}`);
@@ -113,116 +122,119 @@ const Missions = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-lg">Loading missions...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border-2 border-t-white border-white/20 animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#050D2B] via-[#0B132F] to-[#060A1B] text-white py-10 px-4 md:px-10">
-      <h1 className="text-3xl font-bold mb-10 text-center">All Missions</h1>
+    <div className="min-h-screen max-container pt-32 pb-24 px-6 md:px-10">
+      <div className="flex flex-col gap-6 mb-16 max-w-2xl mx-auto text-center items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wide w-max"
+          style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "var(--text-primary)" }}
+        >
+          Tasks & Submissions
+        </motion.div>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-6xl font-heading font-semibold tracking-tight"
+        >
+          All Missions
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-base text-muted font-normal"
+          style={{ color: "var(--text-muted)" }}
+        >
+          Browse active missions, complete objectives in-game, and upload your screenshots to earn GTC and rewards.
+        </motion.p>
+      </div>
 
-      {Object.entries(tasksByType).map(([group_id, tasks]) => (
-        <div key={group_id} className="mb-16">
-          <h2 className="text-2xl font-semibold mb-6 capitalize text-center">
+      {Object.entries(tasksByType).map(([group_id, tasks], groupIndex) => (
+        <div key={group_id} className="mb-20">
+          <motion.h2 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-2xl font-semibold mb-8 capitalize font-heading border-b border-white/10 pb-4"
+          >
             {group_id} Missions
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {tasks.map((task) => {
+          </motion.h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tasks.map((task, i) => {
               const isSubmitted = submittedTasks[task.task_id];
-              
               return (
-                <div
+                <motion.div
                   key={task.task_id}
-                  className={`relative w-full bg-white bg-opacity-10 p-6 rounded-xl shadow-lg backdrop-blur-md border-2 transition group ${
-                    isSubmitted 
-                      ? 'border-green-500 bg-green-900 bg-opacity-20' 
-                      : 'border-purple-500 hover:border-purple-400'
-                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 * i }}
+                  className="glass-card flex flex-col gap-4 relative overflow-hidden group"
+                  style={{ opacity: isSubmitted ? 0.7 : 1 }}
                 >
-                  {/* Submitted Badge */}
                   {isSubmitted && (
-                    <div className="absolute top-2 left-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-20">
-                      ✓ SUBMITTED
+                    <div className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-white border border-white text-black z-20">
+                      ✓ Submitted
                     </div>
                   )}
 
-                  {/* Points */}
-                  <div className="absolute top-4 right-4 bg-purple-700 text-white text-xs font-semibold px-3 py-1 rounded-full shadow-md">
+                  <div className="absolute top-6 left-6 px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-white/10 border border-white/20 z-20">
                     +{task.points} GTC
                   </div>
 
-                  {/* Type Tag */}
-                  <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 text-xs font-bold text-yellow-200 bg-yellow-600 bg-opacity-30 border border-yellow-400 rounded-full shadow-md animate-pulse">
-                      {task.type?.toUpperCase()} MISSION
-                    </span>
-                  </div>
-
-                  {/* Glow */}
-                  <div className={`absolute -inset-0.5 rounded-xl blur-xl opacity-30 group-hover:opacity-60 transition-all pointer-events-none z-0 ${
-                    isSubmitted ? 'bg-green-700' : 'bg-purple-700'
-                  }`} />
-
-                  {/* Content */}
-                  <div className="relative z-10">
-                    <h3 className="text-xl font-semibold mb-3 text-center mt-8">
-                      {task.task_name}
-                    </h3>
-                    <p className="text-sm text-gray-300 mb-4">
-                      {task.full_description}
-                    </p>
-
+                  <div className="relative w-full h-40 rounded-xl overflow-hidden mb-2">
                     <img
                       src={task.demo_image_url}
                       alt={task.task_name}
-                      className={`w-full h-40 object-cover rounded-lg border mb-4 ${
-                        isSubmitted 
-                          ? 'border-green-600 opacity-75 grayscale' 
-                          : 'border-purple-600'
-                      }`}
+                      className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 ${isSubmitted ? 'grayscale' : ''}`}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+                  </div>
 
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-xl font-heading font-semibold tracking-tight">
+                      {task.task_name}
+                    </h3>
+                    <p className="text-sm font-normal text-muted line-clamp-2" style={{ color: "var(--text-muted)" }}>
+                      {task.full_description}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between text-xs font-medium border-t border-white/10 pt-4 mt-2" style={{ color: "var(--text-muted)" }}>
+                    <span>⏱ {task.time}</span>
+                    <span>👥 {task.joined_users}/{task.total_users}</span>
+                  </div>
+
+                  <div className="mt-auto pt-2 flex flex-col gap-3">
                     <input
                       type="file"
                       accept="image/*"
                       disabled={isSubmitted}
-                      className={`w-full mb-4 p-2 rounded text-black ${
-                        isSubmitted 
-                          ? 'bg-gray-400 cursor-not-allowed' 
-                          : 'bg-white'
-                      }`}
-                      onChange={(e) =>
-                        handleFileChange(task.task_id, e.target.files[0])
-                      }
+                      className={`w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-white file:text-black hover:file:bg-gray-200 transition-colors ${isSubmitted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      onChange={(e) => handleFileChange(task.task_id, e.target.files[0])}
                     />
-
-                    <div className="flex justify-between text-xs text-gray-400 mb-4">
-                      <span className="bg-purple-800 px-2 py-1 rounded-full text-white text-xs font-semibold">
-                        ⏱ Estimated: {task.time}
-                      </span>
-                      <span>
-                        👥 Joined: {task.joined_users}/{task.total_users}
-                      </span>
-                    </div>
-
+                    
                     <button
                       onClick={() => handleSubmit(task, group_id)}
                       disabled={isSubmitted}
-                      className={`w-full py-2 rounded font-bold transition ${
+                      className={`w-full py-3 rounded-full text-sm font-medium transition-all ${
                         isSubmitted
-                          ? "bg-green-600 cursor-not-allowed text-white"
-                          : "bg-purple-600 hover:bg-purple-700 text-white"
+                          ? "bg-white/10 text-white/50 cursor-not-allowed"
+                          : "bg-white text-black hover:scale-[1.02]"
                       }`}
                     >
-                      {isSubmitted ? "✓ Submitted" : "Submit Mission"}
+                      {isSubmitted ? "Mission Complete" : "Submit Screenshot"}
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>

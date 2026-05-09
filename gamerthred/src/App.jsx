@@ -27,6 +27,7 @@ import Missions from "./pages/Missions/Missions";
 
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import MissionDetails from "./pages/MissionDetail/MissionDetail";
+import Challenges from "./pages/Challenges/Challenges";
 
 const AppWrapper = () => {
   const location = useLocation();
@@ -49,6 +50,7 @@ const AppWrapper = () => {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/missions" element={<Missions />} />
+        <Route path="/challenges" element={<Challenges />} />
         <Route path="/missiondetails" element={<MissionDetails />} />
         <Route path="/changepassword/:vs_code" element={<ForgotPassword />} />
       </Routes>
